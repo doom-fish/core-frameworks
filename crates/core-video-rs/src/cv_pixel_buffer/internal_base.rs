@@ -2,8 +2,10 @@ use core::fmt;
 
 use std::{ffi::c_void, fmt::Formatter};
 
-use core_foundation::{base::{CFTypeID, TCFType}, declare_TCFType, impl_TCFType};
-
+use core_foundation::{
+    base::{CFTypeID, TCFType},
+    declare_TCFType, impl_TCFType,
+};
 
 #[repr(C)]
 pub struct __CVPixelBufferRef(c_void);
@@ -22,4 +24,3 @@ impl fmt::Debug for CVPixelBuffer {
 extern "C" {
     fn CVPixelBufferGetTypeID() -> CFTypeID;
 }
-

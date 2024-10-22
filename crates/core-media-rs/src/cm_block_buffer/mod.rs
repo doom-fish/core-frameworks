@@ -1,11 +1,9 @@
-mod internal;
-pub mod flags;
 pub mod error;
+pub mod flags;
+mod internal;
 
 use core_foundation::base::CFAllocatorRef;
 pub use internal::{CMBlockBuffer, CMBlockBufferRef};
-
-
 
 impl CMBlockBuffer {
     pub fn create_empty(

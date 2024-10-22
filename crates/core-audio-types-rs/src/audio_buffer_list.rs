@@ -7,8 +7,7 @@ pub struct AudioBufferList<const SIZE: usize = 8> {
     buffers: [AudioBuffer; SIZE],
 }
 
-
-impl  AudioBufferList {
+impl AudioBufferList {
     pub fn num_buffers(&self) -> usize {
         self.number_buffers
     }
@@ -19,4 +18,3 @@ impl  AudioBufferList {
         self.buffers().get(index)
     }
 }
-

@@ -37,12 +37,8 @@ impl CMBlockBuffer {
         }
         let mut block_buffer_ref: CMBlockBufferRef = ptr::null_mut();
         unsafe {
-            let result = CMBlockBufferCreateEmpty(
-                allocator,
-                capacity,
-                flags,
-                &mut block_buffer_ref,
-            );
+            let result =
+                CMBlockBufferCreateEmpty(allocator, capacity, flags, &mut block_buffer_ref);
             if result == NO_ERROR {
                 Ok(CMBlockBuffer::wrap_under_create_rule(block_buffer_ref))
             } else {

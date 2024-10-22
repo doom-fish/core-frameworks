@@ -156,7 +156,10 @@ impl CVPixelBuffer {
                 &mut pixel_buffer_out,
             );
             if result == CV_RETURN_SUCCESS {
-                Ok(CVPixelBufferWithLifetime(CVPixelBuffer::wrap_under_create_rule(pixel_buffer_out), PhantomData))
+                Ok(CVPixelBufferWithLifetime(
+                    CVPixelBuffer::wrap_under_create_rule(pixel_buffer_out),
+                    PhantomData,
+                ))
             } else {
                 Err(CVPixelBufferError::from(result))
             }

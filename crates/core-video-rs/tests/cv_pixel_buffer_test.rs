@@ -109,7 +109,7 @@ fn test_create_with_bytes_and_release() -> Result<(), Box<dyn Error>> {
         FourCharCode::from_str("BGRA").unwrap(),
         vec![PIXEL_VALUE; SIZE],
         BYTE_PER_ROW,
-        move | address| {
+        move |address| {
             assert_eq!(move_into_closure, vec![1, 2, 3]);
             assert!(!address.is_empty());
         },

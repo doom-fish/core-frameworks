@@ -3,8 +3,8 @@ use std::error::Error;
 use core_utils_rs::four_char_code::FourCharCode;
 use core_utils_rs::lock::{LockTrait, MutLockTrait};
 
-use core_video_rs::cv_pixel_buffer::CVPixelBuffer;
 use core_video_rs::cv_pixel_buffer::attributes::PixelBufferAttributes;
+use core_video_rs::cv_pixel_buffer::CVPixelBuffer;
 const WIDTH: usize = 10;
 const HEIGHT: usize = 10;
 

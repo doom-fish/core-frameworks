@@ -8,7 +8,7 @@ use crate::{
 use super::{error::CMSampleBufferError, CMSampleBuffer};
 
 impl CMSampleBuffer {
-   pub fn internal_get_data_buffer(&self) -> Result<CMBlockBuffer, CMSampleBufferError> {
+    pub fn internal_get_data_buffer(&self) -> Result<CMBlockBuffer, CMSampleBufferError> {
         extern "C" {
             fn CMSampleBufferGetDataBuffer(sampleBuffer: CMSampleBufferRef) -> CMBlockBufferRef;
         }

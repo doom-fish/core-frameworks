@@ -1,5 +1,9 @@
 #![allow(clippy::too_many_arguments)]
-use std::{marker::PhantomData, ops::{Deref, DerefMut}, ptr};
+use std::{
+    marker::PhantomData,
+    ops::{Deref, DerefMut},
+    ptr,
+};
 
 use core_foundation::base::{Boolean, CFAllocatorRef, OSStatus, TCFType};
 use core_utils_rs::trampoline::{
@@ -14,27 +18,23 @@ use crate::{
     types::CMItemCount,
 };
 
-use super::{
-    error::CMSampleBufferError,
-    internal_base::CMSampleBufferRef,
-};
+use super::{error::CMSampleBufferError, internal_base::CMSampleBufferRef};
 
 #[derive(Debug)]
-pub struct CMSampleBufferWithLifeTime<'a>(CMSampleBuffer, PhantomData<&'a()>);
+pub struct CMSampleBufferWithLifeTime<'a>(CMSampleBuffer, PhantomData<&'a ()>);
 
-impl <'a> Deref for CMSampleBufferWithLifeTime<'a> {
+impl<'a> Deref for CMSampleBufferWithLifeTime<'a> {
     type Target = CMSampleBuffer;
 
     fn deref(&self) -> &Self::Target {
         &self.0
     }
 }
-impl <'a> DerefMut for CMSampleBufferWithLifeTime<'a> {
+impl<'a> DerefMut for CMSampleBufferWithLifeTime<'a> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
-
 
 impl CMSampleBuffer {
     pub(super) fn internal_create<'a, TMakeDataReadyCallback>(
@@ -92,7 +92,10 @@ impl CMSampleBuffer {
                 &mut sample_buffer_out,
             );
             if result == NO_ERROR {
-                Ok(CMSampleBufferWithLifeTime(CMSampleBuffer::wrap_under_create_rule(sample_buffer_out), PhantomData))
+                Ok(CMSampleBufferWithLifeTime(
+                    CMSampleBuffer::wrap_under_create_rule(sample_buffer_out),
+                    PhantomData,
+                ))
             } else {
                 Err(CMSampleBufferError::from(result))
             }

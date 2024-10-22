@@ -1,5 +1,6 @@
 use std::{
-    io, ops::{Deref, DerefMut}
+    io,
+    ops::{Deref, DerefMut},
 };
 
 use core_utils_rs::lock::{
@@ -9,8 +10,6 @@ use core_utils_rs::lock::{
 use crate::cv_pixel_buffer::{error::CVPixelBufferError, CVPixelBuffer};
 
 use super::internal_lock::CVPixelBufferLockFlags;
-
-
 
 #[derive(Debug)]
 pub struct BaseAddressGuard<'a>(CVPixelBuffer, &'a [u8]);

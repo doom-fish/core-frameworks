@@ -9,12 +9,7 @@ pub struct __CMSampleBufferRef(c_void);
 pub type CMSampleBufferRef = *mut __CMSampleBufferRef;
 
 declare_TCFType!(CMSampleBuffer, CMSampleBufferRef);
-impl_TCFType!(
-    CMSampleBuffer,
-    CMSampleBufferRef,
-    CMSampleBufferGetTypeID
-);
-
+impl_TCFType!(CMSampleBuffer, CMSampleBufferRef, CMSampleBufferGetTypeID);
 
 unsafe impl Send for CMSampleBuffer {}
 

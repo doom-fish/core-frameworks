@@ -1,7 +1,5 @@
 [package]
 name = "core-utils-rs"
-version = "0.1.1"
-edition = "2021"
 keywords = ["coreutils", "corevideo", "macos", "apple", "video"]
 description = "Rust wrapper for apple's CoreVideo framework"
 categories = [
@@ -10,10 +8,13 @@ categories = [
   "multimedia::video",
   "os::macos-apis",
 ]
-authors = ["Per Johansson <mail@perjohansson.net>"]
-repository = "https://github.com/svtlabs/core-video-rs"
-homepage = "https://github.com/svtlabs"
-license = "MIT OR Apache-2.0"
+
+repository.workspace = true
+authors.workspace = true
+homepage.workspace = true
+license.workspace = true
+version.workspace = true
+edition.workspace = true
 
 
 [dependencies]

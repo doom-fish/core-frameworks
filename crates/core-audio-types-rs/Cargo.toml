@@ -2,21 +2,21 @@
 name = "core-audio-types-rs"
 description = "Rust wrapper for apple's CoreAudioTypes framework"
 keywords = ["screencapture", "screencapturekit", "macos"]
+
 categories = [
   "external-ffi-bindings",
   "multimedia",
   "multimedia::audio",
   "os::macos-apis",
 ]
-authors = ["Per Johansson <mail@perjohansson.net>"]
-repository = "https://github.com/svtlabs/core-audio-types-rs"
-homepage = "https://github.com/svtlabs"
-license = "MIT OR Apache-2.0"
 
-version = "0.1.1"
-edition = "2021"
+repository.workspace = true
+authors.workspace = true
+homepage.workspace = true
+license.workspace = true
+version.workspace = true
+edition.workspace = true
 
 
 [dependencies]
 core-foundation.workspace = true
-

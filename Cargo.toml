@@ -6,10 +6,15 @@ members = [
   "crates/core-utils-rs",
   "crates/core-video-rs",
 ]
-
+[workspace.package]
+authors = ["Per Johansson <per@doom.fisn>"]
+version = "0.1.0"
+edition = "2021"
+repository = "https://github.com/doom-fish/core-frameworks"
+homepage = "https://doom.fish"
+license = "MIT OR Apache-2.0"
 
 [workspace.dependencies]
-
 core-media-rs = { path = "crates/core-media-rs" }
 core-video-rs = { path = "crates/core-video-rs" }
 core-audio-types-rs = { path = "crates/core-audio-types-rs" }

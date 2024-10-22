@@ -1,0 +1,23 @@
+[package]
+name = "core-utils-rs"
+version = "0.1.1"
+edition = "2021"
+keywords = ["coreutils", "corevideo", "macos", "apple", "video"]
+description = "Rust wrapper for apple's CoreVideo framework"
+categories = [
+  "external-ffi-bindings",
+  "multimedia",
+  "multimedia::video",
+  "os::macos-apis",
+]
+authors = ["Per Johansson <mail@perjohansson.net>"]
+repository = "https://github.com/svtlabs/core-video-rs"
+homepage = "https://github.com/svtlabs"
+license = "MIT OR Apache-2.0"
+
+
+[dependencies]
+core-foundation.workspace = true
+
+# Wrapped dependencies, to be replaced with new code
+four-char-code = { version = "2", default-features = false }

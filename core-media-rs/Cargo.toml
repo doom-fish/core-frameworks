@@ -1,0 +1,30 @@
+[package]
+name = "core-media-rs"
+description = "Rust wrapper for apple's CoreMedia framework"
+keywords = ["screencapture", "screencapturekit", "macos"]
+categories = [
+  "external-ffi-bindings",
+  "multimedia",
+  "multimedia::video",
+  "os::macos-apis",
+]
+authors = ["Per Johansson <mail@perjohansson.net>"]
+repository = "https://github.com/svtlabs/core-media-rs"
+homepage = "https://github.com/svtlabs"
+rust-version = "1.72"
+license = "MIT OR Apache-2.0"
+links = "CoreMedia"
+version = "0.1.1"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# Workspace dependencies
+core-video-rs.workspace = true
+core-audio-types-rs.workspace = true
+core-utils-rs.workspace = true
+
+# Workspace dependencies
+core-foundation.workspace = true
+thiserror.workspace = true

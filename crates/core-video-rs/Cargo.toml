@@ -1,0 +1,27 @@
+[package]
+name = "core-video-rs"
+description = "Rust wrapper for apple's CoreVideo framework"
+keywords = ["screencapture", "screencapturekit", "macos"]
+categories = [
+  "external-ffi-bindings",
+  "multimedia",
+  "multimedia::video",
+  "os::macos-apis",
+]
+authors = ["Per Johansson <mail@perjohansson.net>"]
+repository = "https://github.com/svtlabs/core-video-rs"
+homepage = "https://github.com/svtlabs"
+license = "MIT OR Apache-2.0"
+version = "0.1.1"
+edition = "2021"
+
+
+[dependencies]
+# Workspace dependencies
+core-utils-rs.workspace = true
+
+# External dependencies
+core-foundation.workspace = true
+core-graphics.workspace = true
+io-surface.workspace = true
+thiserror.workspace = true

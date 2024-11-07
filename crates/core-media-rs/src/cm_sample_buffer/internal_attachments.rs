@@ -5,13 +5,16 @@ use core_foundation::{
 
 use crate::cm_sample_buffer::CMSampleBufferRef;
 
-use super::{error::CMSampleBufferError, CMSampleBuffer};
+use super::{
+    error::CMSampleBufferError,
+    internal_sample_buffer_attachments::CMSampleBufferAttachments,
+    CMSampleBuffer,
+};
 
 impl CMSampleBuffer {
-    pub fn internal_get_attachements_array<T>(&self) -> Result<CFArray<T>, CMSampleBufferError>
-    where
-        T: TCFType,
-    {
+    pub fn internal_get_attachements_array(
+        &self,
+    ) -> Result<CMSampleBufferAttachments, CMSampleBufferError> {
         extern "C" {
             pub fn CMSampleBufferGetSampleAttachmentsArray(
                 sample: CMSampleBufferRef,
@@ -23,7 +26,9 @@ impl CMSampleBuffer {
         if attachments_ref.is_null() {
             Err(CMSampleBufferError::CouldNotGetDataBuffer)
         } else {
-            Ok(unsafe { CFArray::wrap_under_create_rule(attachments_ref) })
+            Ok(unsafe {
+                CMSampleBufferAttachments::new(CFArray::wrap_under_create_rule(attachments_ref))
+            })
         }
     }
 }

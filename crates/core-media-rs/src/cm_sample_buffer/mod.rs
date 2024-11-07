@@ -1,6 +1,7 @@
 #![allow(clippy::too_many_arguments)]
 
 pub mod error;
+pub(crate) mod internal_attachments;
 pub(crate) mod internal_audio;
 pub(crate) mod internal_base;
 pub(crate) mod internal_create;
@@ -12,7 +13,10 @@ pub(crate) mod internal_sizes;
 use core::fmt;
 use std::fmt::Formatter;
 
-use core_foundation::base::CFAllocatorRef;
+use core_foundation::{
+    array::CFArray,
+    base::{CFAllocatorRef, TCFType},
+};
 use error::CMSampleBufferError;
 use internal_audio::RetainedAudioBufferList;
 pub use internal_base::{CMSampleBuffer, CMSampleBufferRef};
@@ -28,6 +32,12 @@ impl fmt::Debug for CMSampleBuffer {
         f.debug_struct("CMSampleBuffer").finish()
     }
 }
+
+/// A trait for types that can be attached to a CMSampleBuffer.
+///
+/// # Safety
+/// This is unsafe because the implementor must ensure that the type is a valid attachment.
+pub unsafe trait CMSampleBufferAttachment: TCFType {}
 
 impl CMSampleBuffer {
     pub fn create_ready(
@@ -46,6 +56,12 @@ impl CMSampleBuffer {
             sample_timings,
             sample_sizes,
         )
+    }
+
+    pub fn get_attachments<T: CMSampleBufferAttachment>(
+        &self,
+    ) -> Result<CFArray<T>, CMSampleBufferError> {
+        self.internal_get_attachements_array()
     }
 
     pub fn create<'a, TMakeDataReadyCallback>(

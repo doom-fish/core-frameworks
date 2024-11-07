@@ -8,15 +8,13 @@ pub(crate) mod internal_create;
 pub(crate) mod internal_data;
 pub(crate) mod internal_format_description;
 pub(crate) mod internal_readyness;
-pub(crate) mod internal_sizes;
 pub mod internal_sample_buffer_attachments;
+pub(crate) mod internal_sizes;
 
 use core::fmt;
 use std::fmt::Formatter;
 
-use core_foundation::
-    base::CFAllocatorRef
-;
+use core_foundation::base::{CFAllocatorRef, CFTypeID, TCFType};
 use error::CMSampleBufferError;
 use internal_audio::RetainedAudioBufferList;
 pub use internal_base::{CMSampleBuffer, CMSampleBufferRef};
@@ -34,7 +32,13 @@ impl fmt::Debug for CMSampleBuffer {
     }
 }
 
-
+/// A trait for types that can be attached to a CMSampleBuffer.
+///
+/// # Safety
+/// This is unsafe because the implementor must ensure that the type is a valid attachment.
+pub trait CMSampleBufferAttachment: TCFType {
+    fn correct_type_invariant(raw: CFTypeID) -> bool;
+}
 
 impl CMSampleBuffer {
     pub fn create_ready(
@@ -55,10 +59,7 @@ impl CMSampleBuffer {
         )
     }
 
-    pub fn get_attachments(
-        &self,
-
-    ) -> Result<CMSampleBufferAttachments, CMSampleBufferError> {
+    pub fn get_attachments(&self) -> Result<CMSampleBufferAttachments, CMSampleBufferError> {
         self.internal_get_attachements_array()
     }
 

@@ -2,9 +2,11 @@ use std::ops::Deref;
 
 use core_foundation::{
     array::CFArray,
-    base::{CFTypeID, CFTypeRef, TCFType, TCFTypeRef},
+    base::{CFTypeID, CFTypeRef, TCFTypeRef},
 };
 use thiserror::Error;
+
+use super::CMSampleBufferAttachment;
 
 #[repr(transparent)]
 #[derive(Debug, Clone)]
@@ -27,13 +29,6 @@ pub enum CMSampleBufferAttachmentError {
     CouldNotGetAttachment(usize),
 }
 
-/// A trait for types that can be attached to a CMSampleBuffer.
-///
-/// # Safety
-/// This is unsafe because the implementor must ensure that the type is a valid attachment.
-pub trait CMSampleBufferAttachment: TCFType {
-    fn correct_type_invariant(raw: CFTypeID) -> bool;
-}
 impl CMSampleBufferAttachments {
     pub fn new(attachments: CFArray) -> Self {
         CMSampleBufferAttachments(attachments)

@@ -24,4 +24,4 @@ core-utils-rs = { path = "crates/core-utils-rs" }
 core-foundation = "0.10"
 core-graphics = "0.24"
 io-surface = "0.16"
-thiserror = "1.0"
+thiserror = "2.0"

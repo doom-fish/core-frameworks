@@ -1,34 +1,30 @@
-use core_foundation::{
-    array::{CFArray, CFArrayRef},
-    base::TCFType,
-};
+use std::ffi::c_void;
+
+use core_foundation::base::{TCFType, TCFTypeRef};
 
 use crate::cm_sample_buffer::CMSampleBufferRef;
 
-use super::{
-    error::CMSampleBufferError,
-    internal_sample_buffer_attachments::CMSampleBufferAttachments,
-    CMSampleBuffer,
-};
+use super::CMSampleBuffer;
 
 impl CMSampleBuffer {
-    pub fn internal_get_attachements_array(
-        &self,
-    ) -> Result<CMSampleBufferAttachments, CMSampleBufferError> {
+    pub(crate) fn internal_get_attachement<T: TCFType>(&self, key: &str) -> Option<T> {
         extern "C" {
-            pub fn CMSampleBufferGetSampleAttachmentsArray(
-                sample: CMSampleBufferRef,
-                create: u8,
-            ) -> CFArrayRef;
+            pub fn CMGetAttachment(
+                sbuf: CMSampleBufferRef,
+                key: *const u8,
+                attachment_mode_out: *mut u32,
+            ) -> *const c_void;
         }
-        let attachments_ref =
-            unsafe { CMSampleBufferGetSampleAttachmentsArray(self.as_concrete_TypeRef(), 1) };
-        if attachments_ref.is_null() {
-            Err(CMSampleBufferError::CouldNotGetDataBuffer)
+
+        let ptr = unsafe { CMGetAttachment(self.as_concrete_TypeRef(), key.as_ptr(), std::ptr::null_mut()) };
+
+        if ptr.is_null() {
+            None
         } else {
-            Ok(unsafe {
-                CMSampleBufferAttachments::new(CFArray::wrap_under_create_rule(attachments_ref))
-            })
+            unsafe {
+                let t_ref = T::Ref::from_void_ptr(ptr);
+                Some(T::wrap_under_get_rule(t_ref))
+             }
         }
     }
 }

@@ -19,9 +19,9 @@ edition.workspace = true
 
 [dependencies]
 # Inter dependencies
-core-video-rs = { path = "../core-video-rs" }
-core-audio-types-rs = { path = "../core-audio-types-rs" }
-core-utils-rs = { path = "../core-utils-rs" }
+core-video-rs.workspace = true
+core-audio-types-rs.workspace = true
+core-utils-rs.workspace = true
 
 # Workspace dependencies
 core-foundation.workspace = true

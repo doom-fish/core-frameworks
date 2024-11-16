@@ -10,9 +10,6 @@ pub(crate) mod internal_format_description;
 pub(crate) mod internal_readyness;
 pub(crate) mod internal_sizes;
 
-use core::fmt;
-use std::fmt::Formatter;
-
 use core_foundation::base::{CFAllocatorRef, TCFType};
 use error::CMSampleBufferError;
 use internal_audio::RetainedAudioBufferList;
@@ -23,12 +20,6 @@ use crate::{
     cm_block_buffer::CMBlockBuffer, cm_format_description::CMFormatDescription,
     cm_sample_timing_info::CMSampleTimingInfo, types::CMItemCount,
 };
-
-impl fmt::Debug for CMSampleBuffer {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        f.debug_struct("CMSampleBuffer").finish()
-    }
-}
 
 impl CMSampleBuffer {
     pub fn create_ready(

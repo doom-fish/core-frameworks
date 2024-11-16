@@ -3,7 +3,7 @@ use std::ptr;
 
 use core_foundation::base::{CFAllocatorRef, CFTypeID, OSStatus, TCFType};
 use core_foundation::dictionary::{CFDictionary, CFDictionaryRef};
-use core_foundation::{declare_TCFType, impl_TCFType};
+use core_foundation::{declare_TCFType, impl_CFTypeDescription, impl_TCFType};
 use core_utils_rs::four_char_code::FourCharCode;
 
 use crate::cm_format_description::error::NO_ERROR;
@@ -22,6 +22,7 @@ impl_TCFType!(
     CMFormatDescriptionRef,
     CMFormatDescriptionGetTypeID
 );
+impl_CFTypeDescription!(CMFormatDescription);
 
 extern "C" {
     pub fn CMFormatDescriptionGetTypeID() -> CFTypeID;

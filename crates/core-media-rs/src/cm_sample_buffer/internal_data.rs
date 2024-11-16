@@ -16,7 +16,7 @@ impl CMSampleBuffer {
         if block_buffer_ref.is_null() {
             Err(CMSampleBufferError::CouldNotGetDataBuffer)
         } else {
-            Ok(unsafe { CMBlockBuffer::wrap_under_create_rule(block_buffer_ref) })
+            Ok(unsafe { CMBlockBuffer::wrap_under_get_rule(block_buffer_ref) })
         }
     }
 }

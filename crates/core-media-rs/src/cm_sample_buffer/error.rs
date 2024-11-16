@@ -2,7 +2,6 @@ use core_foundation::base::OSStatus;
 use thiserror::Error;
 
 const FLAG_OFFSET: OSStatus = -12729;
-
 const ALLOCATION_FAILED: OSStatus = FLAG_OFFSET - 1;
 const REQUIRED_PARAMETER_MISSING: OSStatus = FLAG_OFFSET - 2;
 const ALREADY_HAS_DATA_BUFFER: OSStatus = FLAG_OFFSET - 3;
@@ -63,6 +62,8 @@ pub enum CMSampleBufferError<TUnknown = OSStatus> {
     CouldNotGetSampleAttachments,
     #[error("Could not get data buffer from sample buffer.")]
     CouldNotGetDataBuffer,
+    #[error("Audio buffer list does not contain audio buffer.")]
+    SampleBufferDoesNotContainAudioBuffer,
     #[error("An unknown error occurred with code {0}")]
     UnknownError(TUnknown),
 }
@@ -117,6 +118,7 @@ impl From<CMSampleBufferError> for OSStatus {
             CMSampleBufferError::CouldNotGetFormatDescription => -1,
             CMSampleBufferError::CouldNotGetSampleAttachments => -1,
             CMSampleBufferError::CouldNotGetDataBuffer => -1,
+            CMSampleBufferError::SampleBufferDoesNotContainAudioBuffer => -1,
             CMSampleBufferError::UnknownError(value) => value,
         }
     }

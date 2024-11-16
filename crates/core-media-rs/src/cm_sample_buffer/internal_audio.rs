@@ -1,14 +1,14 @@
 use std::{
-    alloc,
+    alloc::{self, Layout},
     ops::{Deref, DerefMut},
     ptr::{self},
 };
 
 use core_audio_types_rs::audio_buffer_list::AudioBufferList;
-use core_foundation::base::{CFAllocatorRef, OSStatus, TCFType};
+use core_foundation::base::{CFAllocatorRef, CFRelease, OSStatus, TCFType};
 
 use crate::{
-    cm_block_buffer::{CMBlockBuffer, CMBlockBufferRef},
+    cm_block_buffer::CMBlockBufferRef,
     cm_sample_buffer::{error::NO_ERROR, CMSampleBufferRef},
 };
 
@@ -18,7 +18,20 @@ use super::{error::CMSampleBufferError, CMSampleBuffer};
 pub const kCMSampleBufferFlag_AudioBufferList_Assure16ByteAlignment: u32 = 1 << 0;
 
 #[derive(Debug, Clone)]
-pub struct RetainedAudioBufferList(AudioBufferList, #[allow(dead_code)] CMBlockBuffer);
+pub struct RetainedAudioBufferList(
+    AudioBufferList,
+    *mut AudioBufferList,
+    Layout,
+    CMBlockBufferRef,
+);
+impl Drop for RetainedAudioBufferList {
+    fn drop(&mut self) {
+        unsafe {
+            CFRelease(self.3 as _);
+            alloc::dealloc(self.1 as _, self.2);
+        }
+    }
+}
 
 impl Deref for RetainedAudioBufferList {
     type Target = AudioBufferList;
@@ -38,6 +51,7 @@ impl CMSampleBuffer {
         &self,
     ) -> Result<RetainedAudioBufferList, CMSampleBufferError> {
         extern "C" {
+            fn CMSampleBufferGetDataBuffer(sampleBuffer: CMSampleBufferRef) -> CMBlockBufferRef;
             fn CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
                 sbuf: CMSampleBufferRef,
                 buffer_list_size_needed_out: *mut usize,
@@ -51,7 +65,7 @@ impl CMSampleBuffer {
         }
         unsafe {
             let mut buffer_size = 0;
-            CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
+            let res = CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
                 self.as_concrete_TypeRef(),
                 &mut buffer_size,
                 ptr::null_mut(),
@@ -61,7 +75,12 @@ impl CMSampleBuffer {
                 0,
                 &mut ptr::null_mut(),
             );
-            let block_buffer = self.internal_get_data_buffer()?;
+
+            if res != NO_ERROR {
+                return Err(CMSampleBufferError::SampleBufferDoesNotContainAudioBuffer);
+            }
+
+            let mut block_buffer = CMSampleBufferGetDataBuffer(self.as_concrete_TypeRef());
             let layout = alloc::Layout::from_size_align(buffer_size, 16)
                 .map_err(|_e| CMSampleBufferError::CouldNotGetDataBuffer)?;
             let audio_buffer_list_ptr = alloc::alloc(layout).cast::<AudioBufferList>();
@@ -74,14 +93,19 @@ impl CMSampleBuffer {
                 ptr::null_mut(),
                 ptr::null_mut(),
                 kCMSampleBufferFlag_AudioBufferList_Assure16ByteAlignment,
-                &mut block_buffer.as_concrete_TypeRef(),
+                &mut block_buffer,
             );
 
             if result != NO_ERROR {
                 Err(CMSampleBufferError::from(result))
             } else {
                 let buffer_list: AudioBufferList = ptr::read(audio_buffer_list_ptr);
-                Ok(RetainedAudioBufferList(buffer_list, block_buffer))
+                Ok(RetainedAudioBufferList(
+                    buffer_list,
+                    audio_buffer_list_ptr,
+                    layout,
+                    block_buffer,
+                ))
             }
         }
     }

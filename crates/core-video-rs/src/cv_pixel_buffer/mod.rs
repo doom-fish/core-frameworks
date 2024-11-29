@@ -4,13 +4,14 @@ mod internal_base;
 mod internal_create;
 mod internal_lock;
 mod internal_props;
+
 pub mod lock;
 pub mod planar_data;
 
 use attributes::PixelBufferAttributes;
 use core_utils_rs::four_char_code::FourCharCode;
 use error::CVPixelBufferError;
-pub use internal_base::CVPixelBuffer;
+pub use internal_base::{CVPixelBuffer, CVPixelBufferRef};
 use internal_create::CVPixelBufferWithLifetime;
 use io_surface::IOSurface;
 use planar_data::PlanarDataPointer;
@@ -19,19 +20,19 @@ impl CVPixelBuffer {
     pub fn is_planar(&self) -> bool {
         self.internal_is_planar()
     }
-    pub fn get_bytes_per_row(&self) -> usize {
+    pub fn get_bytes_per_row(&self) -> u32 {
         self.internal_bytes_per_row()
     }
-    pub fn get_width(&self) -> usize {
+    pub fn get_width(&self) -> u32 {
         self.internal_width()
     }
-    pub fn get_height(&self) -> usize {
+    pub fn get_height(&self) -> u32 {
         self.internal_height()
     }
 
     pub fn create(
-        width: usize,
-        height: usize,
+        width: u32,
+        height: u32,
         pixel_format_type: FourCharCode,
         pixel_buffer_attributes: PixelBufferAttributes,
     ) -> Result<Self, CVPixelBufferError> {
@@ -45,8 +46,8 @@ impl CVPixelBuffer {
         Self::internal_create_with_io_surface(surface, pixel_buffer_attributes)
     }
     pub fn create_with_planar_bytes<'a>(
-        width: usize,
-        height: usize,
+        width: u32,
+        height: u32,
         pixel_format_type: FourCharCode,
         data_pointer: PlanarDataPointer,
         pixel_buffer_attributes: PixelBufferAttributes,
@@ -62,11 +63,11 @@ impl CVPixelBuffer {
     }
 
     pub fn create_with_bytes<'a>(
-        width: usize,
-        height: usize,
+        width: u32,
+        height: u32,
         pixel_format_type: FourCharCode,
         base_address: Vec<u8>,
-        bytes_per_row: usize,
+        bytes_per_row: u32,
         pixel_buffer_attributes: PixelBufferAttributes,
     ) -> Result<CVPixelBufferWithLifetime<'a>, CVPixelBufferError> {
         Self::internal_create_with_bytes(
@@ -81,11 +82,11 @@ impl CVPixelBuffer {
     }
     #[allow(clippy::too_many_arguments)]
     pub fn create_with_bytes_release_cb<'a, TReleaseCallback>(
-        width: usize,
-        height: usize,
+        width: u32,
+        height: u32,
         pixel_format_type: FourCharCode,
         base_address: Vec<u8>,
-        bytes_per_row: usize,
+        bytes_per_row: u32,
         release_callback: TReleaseCallback,
         pixel_buffer_attributes: PixelBufferAttributes,
     ) -> Result<CVPixelBufferWithLifetime<'a>, CVPixelBufferError>
@@ -104,8 +105,8 @@ impl CVPixelBuffer {
     }
 
     pub fn create_with_planar_bytes_release_cb<'a, TReleaseCallback>(
-        width: usize,
-        height: usize,
+        width: u32,
+        height: u32,
         pixel_format_type: FourCharCode,
         data_pointer: PlanarDataPointer,
         release_callback: TReleaseCallback,

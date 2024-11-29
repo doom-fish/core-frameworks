@@ -12,23 +12,23 @@ impl CVPixelBuffer {
 
         unsafe { CVPixelBufferIsPlanar(self.as_concrete_TypeRef()) == 1 }
     }
-    pub(super) fn internal_bytes_per_row(&self) -> usize {
+    pub(super) fn internal_bytes_per_row(&self) -> u32 {
         extern "C" {
-            fn CVPixelBufferGetBytesPerRow(pixel_buffer_ref: CVPixelBufferRef) -> usize;
+            fn CVPixelBufferGetBytesPerRow(pixel_buffer_ref: CVPixelBufferRef) -> u32;
         }
 
         unsafe { CVPixelBufferGetBytesPerRow(self.as_concrete_TypeRef()) }
     }
-    pub(super) fn internal_width(&self) -> usize {
+    pub(super) fn internal_width(&self) -> u32 {
         extern "C" {
-            fn CVPixelBufferGetWidth(pixel_buffer_ref: CVPixelBufferRef) -> usize;
+            fn CVPixelBufferGetWidth(pixel_buffer_ref: CVPixelBufferRef) -> u32;
         }
 
         unsafe { CVPixelBufferGetWidth(self.as_concrete_TypeRef()) }
     }
-    pub(super) fn internal_height(&self) -> usize {
+    pub(super) fn internal_height(&self) -> u32 {
         extern "C" {
-            fn CVPixelBufferGetHeight(pixel_buffer_ref: CVPixelBufferRef) -> usize;
+            fn CVPixelBufferGetHeight(pixel_buffer_ref: CVPixelBufferRef) -> u32;
         }
 
         unsafe { CVPixelBufferGetHeight(self.as_concrete_TypeRef()) }

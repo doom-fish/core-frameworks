@@ -22,22 +22,22 @@ use super::planar_data::PlanarDataPointer;
 #[derive(Debug)]
 pub struct CVPixelBufferWithLifetime<'a>(pub CVPixelBuffer, pub PhantomData<&'a ()>);
 
-impl<'a> Deref for CVPixelBufferWithLifetime<'a> {
+impl Deref for CVPixelBufferWithLifetime<'_> {
     type Target = CVPixelBuffer;
 
     fn deref(&self) -> &Self::Target {
         &self.0
     }
 }
-impl<'a> DerefMut for CVPixelBufferWithLifetime<'a> {
+impl DerefMut for CVPixelBufferWithLifetime<'_> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
 impl CVPixelBuffer {
     pub(super) fn internal_create_with_planar_bytes<'a, TReleaseCallback>(
-        width: usize,
-        height: usize,
+        width: u32,
+        height: u32,
         pixel_format_type: FourCharCode,
         data_pointer: PlanarDataPointer,
         release_callback: TReleaseCallback,
@@ -49,16 +49,16 @@ impl CVPixelBuffer {
         extern "C" {
             fn CVPixelBufferCreateWithPlanarBytes(
                 allocator: CFAllocatorRef,
-                width: usize,
-                height: usize,
+                width: u32,
+                height: u32,
                 pixel_format_type: OSType,
                 data_ptr: *mut u8,
-                data_size: usize,
-                number_of_planes: usize,
+                data_size: u32,
+                number_of_planes: u32,
                 base_addresses: *const *const u8,
-                plane_width: *const usize,
-                plane_height: *const usize,
-                plane_bytes_per_row: *const usize,
+                plane_width: *const u32,
+                plane_height: *const u32,
+                plane_bytes_per_row: *const u32,
                 release_callback: TrampolineLeftCallback,
                 release_ref_con: TrampolineRefcon,
                 pixel_buffer_attributes: CFDictionaryRef,
@@ -107,11 +107,11 @@ impl CVPixelBuffer {
         }
     }
     pub(super) fn internal_create_with_bytes<'a, TReleaseCallback>(
-        width: usize,
-        height: usize,
+        width: u32,
+        height: u32,
         pixel_format_type: FourCharCode,
         base_address: Vec<u8>,
-        bytes_per_row: usize,
+        bytes_per_row: u32,
         release_callback: TReleaseCallback,
         pixel_buffer_attributes: PixelBufferAttributes,
     ) -> Result<CVPixelBufferWithLifetime<'a>, CVPixelBufferError>
@@ -121,11 +121,11 @@ impl CVPixelBuffer {
         extern "C" {
             fn CVPixelBufferCreateWithBytes(
                 allocator: CFAllocatorRef,
-                width: usize,
-                height: usize,
+                width: u32,
+                height: u32,
                 pixel_format_type: OSType,
                 base_address: *const u8,
-                bytes_per_row: usize,
+                bytes_per_row: u32,
                 raw_release_callback: TrampolineLeftCallback,
                 raw_release_ref_con: TrampolineRefcon,
                 pixel_buffer_attributes: CFDictionaryRef,
@@ -133,7 +133,7 @@ impl CVPixelBuffer {
             ) -> CVReturn;
 
         }
-        if base_address.len() < bytes_per_row * height {
+        if base_address.len() < (bytes_per_row * height) as usize {
             return Err(CVPixelBufferError::InvalidSize);
         }
 
@@ -197,16 +197,16 @@ impl CVPixelBuffer {
     }
 
     pub(super) fn internal_create(
-        width: usize,
-        height: usize,
+        width: u32,
+        height: u32,
         pixel_format_type: FourCharCode,
         pixel_buffer_attributes: PixelBufferAttributes,
     ) -> Result<Self, CVPixelBufferError> {
         extern "C" {
             fn CVPixelBufferCreate(
                 allocator: CFAllocatorRef,
-                width: usize,
-                height: usize,
+                width: u32,
+                height: u32,
                 pixelFormatType: OSType,
                 pixelBufferAttributes: CFDictionaryRef,
                 pixelBufferOut: *mut CVPixelBufferRef,

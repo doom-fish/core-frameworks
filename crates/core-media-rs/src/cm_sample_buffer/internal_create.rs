@@ -23,14 +23,14 @@ use super::{error::CMSampleBufferError, internal_base::CMSampleBufferRef};
 #[derive(Debug)]
 pub struct CMSampleBufferWithLifeTime<'a>(CMSampleBuffer, PhantomData<&'a ()>);
 
-impl<'a> Deref for CMSampleBufferWithLifeTime<'a> {
+impl Deref for CMSampleBufferWithLifeTime<'_> {
     type Target = CMSampleBuffer;
 
     fn deref(&self) -> &Self::Target {
         &self.0
     }
 }
-impl<'a> DerefMut for CMSampleBufferWithLifeTime<'a> {
+impl DerefMut for CMSampleBufferWithLifeTime<'_> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }

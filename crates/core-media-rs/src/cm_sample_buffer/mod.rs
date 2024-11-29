@@ -4,13 +4,14 @@ pub mod error;
 pub(crate) mod internal_attachments;
 pub(crate) mod internal_audio;
 pub(crate) mod internal_base;
+pub(crate) mod internal_buffers;
 pub(crate) mod internal_create;
-pub(crate) mod internal_data;
 pub(crate) mod internal_format_description;
 pub(crate) mod internal_readyness;
 pub(crate) mod internal_sizes;
 
 use core_foundation::base::{CFAllocatorRef, TCFType};
+use core_video_rs::{cv_image_buffer::CVImageBuffer, cv_pixel_buffer::CVPixelBuffer};
 use error::CMSampleBufferError;
 use internal_audio::RetainedAudioBufferList;
 pub use internal_base::{CMSampleBuffer, CMSampleBufferRef};
@@ -92,5 +93,11 @@ impl CMSampleBuffer {
     }
     pub fn get_audio_buffer_list(&self) -> Result<RetainedAudioBufferList, CMSampleBufferError> {
         self.internal_get_audio_buffer_list()
+    }
+    pub fn get_pixel_buffer(&self) -> Result<CVPixelBuffer, CMSampleBufferError> {
+        self.internal_get_pixel_buffer()
+    }
+    pub fn get_image_buffer(&self) -> Result<CVImageBuffer, CMSampleBufferError> {
+        self.internal_get_image_buffer()
     }
 }

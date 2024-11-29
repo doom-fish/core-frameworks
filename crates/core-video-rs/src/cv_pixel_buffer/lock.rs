@@ -1,16 +1,61 @@
 use std::{
+    error::Error,
     io,
     ops::{Deref, DerefMut},
 };
 
-use core_utils_rs::lock::{
-    self, LockGuard, LockGuardTrait, LockTrait, MutLockGuard, MutLockGuardTrait, MutLockTrait,
-};
-
+use super::internal_lock::CVPixelBufferLockFlags;
 use crate::cv_pixel_buffer::{error::CVPixelBufferError, CVPixelBuffer};
 
-use super::internal_lock::CVPixelBufferLockFlags;
+#[derive(Debug)]
+pub struct LockGuard<T: LockGuardTrait>(pub T);
+#[derive(Debug)]
+pub struct MutLockGuard<T: MutLockGuardTrait>(pub T);
 
+impl<T: LockGuardTrait> Drop for LockGuard<T> {
+    fn drop(&mut self) {
+        self.0.unlock();
+    }
+}
+impl<T: MutLockGuardTrait> Drop for MutLockGuard<T> {
+    fn drop(&mut self) {
+        self.0.unlock_mut();
+    }
+}
+impl<T: LockGuardTrait> Deref for LockGuard<T> {
+    type Target = T;
+    fn deref(&self) -> &T {
+        &self.0
+    }
+}
+
+impl<T: MutLockGuardTrait> Deref for MutLockGuard<T> {
+    type Target = T;
+    fn deref(&self) -> &T {
+        &self.0
+    }
+}
+
+impl<T: MutLockGuardTrait> DerefMut for MutLockGuard<T> {
+    fn deref_mut(&mut self) -> &mut T {
+        &mut self.0
+    }
+}
+
+pub trait LockTrait<T: LockGuardTrait, E: Error> {
+    fn lock(&self) -> Result<LockGuard<T>, E>;
+}
+
+pub trait LockGuardTrait {
+    fn unlock(&self);
+}
+
+pub trait MutLockTrait<T: MutLockGuardTrait, E: Error> {
+    fn lock_mut(&mut self) -> Result<MutLockGuard<T>, E>;
+}
+pub trait MutLockGuardTrait {
+    fn unlock_mut(&mut self);
+}
 #[derive(Debug)]
 pub struct BaseAddressGuard<'a>(CVPixelBuffer, &'a [u8]);
 
@@ -85,9 +130,7 @@ impl<'a> LockTrait<BaseAddressGuard<'a>, CVPixelBufferError> for CVPixelBuffer {
     }
 }
 impl<'a> MutLockTrait<MutBaseAddressGuard<'a>, CVPixelBufferError> for CVPixelBuffer {
-    fn lock_mut(
-        &mut self,
-    ) -> Result<lock::MutLockGuard<MutBaseAddressGuard<'a>>, CVPixelBufferError> {
+    fn lock_mut(&mut self) -> Result<MutLockGuard<MutBaseAddressGuard<'a>>, CVPixelBufferError> {
         self.internal_lock_base_address(CVPixelBufferLockFlags::ReadWrite)?;
         Ok(MutLockGuard(MutBaseAddressGuard(
             self.clone(),

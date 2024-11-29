@@ -9,10 +9,11 @@ use io_surface::{
 };
 use std::error::Error;
 
-const WIDTH: usize = 100;
-const BYTE_PER_ROW: usize = 100 * 4;
-const HEIGHT: usize = 100;
-const SIZE: usize = WIDTH * HEIGHT * 4;
+const WIDTH: u32 = 100;
+const BYTE_PER_ROW: u32 = 100 * 4;
+const HEIGHT: u32 = 100;
+const SIZE: usize = (WIDTH * HEIGHT * 4) as usize;
+
 const PIXEL_VALUE: u8 = 0xF2;
 
 #[test]
@@ -85,7 +86,7 @@ fn test_create_with_planar_bytes_and_released() -> Result<(), Box<dyn Error>> {
             |data| {
                 let a = &b;
                 assert_eq!(a.var1, 33);
-                assert_eq!(data.data_size(), SIZE);
+                assert_eq!(data.data_size(), SIZE as u32);
                 assert_eq!(data.number_of_planes(), 2);
                 assert_eq!(data.data.unwrap(), expected_data);
                 assert_eq!(data.base_addresses.len(), 2);

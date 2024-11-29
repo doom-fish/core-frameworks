@@ -1,12 +1,12 @@
 use std::error::Error;
 
 use core_utils_rs::four_char_code::FourCharCode;
-use core_utils_rs::lock::{LockTrait, MutLockTrait};
 
 use core_video_rs::cv_pixel_buffer::attributes::PixelBufferAttributes;
+use core_video_rs::cv_pixel_buffer::lock::{LockTrait, MutLockTrait};
 use core_video_rs::cv_pixel_buffer::CVPixelBuffer;
-const WIDTH: usize = 10;
-const HEIGHT: usize = 10;
+const WIDTH: u32 = 10;
+const HEIGHT: u32 = 10;
 
 #[test]
 fn test_create_lock_write() -> Result<(), Box<dyn Error>> {
@@ -19,6 +19,7 @@ fn test_create_lock_write() -> Result<(), Box<dyn Error>> {
 
     {
         let mut b = pixel_buffer.lock_mut()?;
+        println!("{b:?}");
         b.fill(123);
     };
     {

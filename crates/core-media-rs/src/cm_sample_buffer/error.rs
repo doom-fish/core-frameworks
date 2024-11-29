@@ -62,6 +62,8 @@ pub enum CMSampleBufferError<TUnknown = OSStatus> {
     CouldNotGetSampleAttachments,
     #[error("Could not get data buffer from sample buffer.")]
     CouldNotGetDataBuffer,
+    #[error("Could not get image buffer from sample buffer.")]
+    CouldNotGetImageBuffer,
     #[error("Audio buffer list does not contain audio buffer.")]
     SampleBufferDoesNotContainAudioBuffer,
     #[error("An unknown error occurred with code {0}")]
@@ -118,6 +120,7 @@ impl From<CMSampleBufferError> for OSStatus {
             CMSampleBufferError::CouldNotGetFormatDescription => -1,
             CMSampleBufferError::CouldNotGetSampleAttachments => -1,
             CMSampleBufferError::CouldNotGetDataBuffer => -1,
+            CMSampleBufferError::CouldNotGetImageBuffer => -1,
             CMSampleBufferError::SampleBufferDoesNotContainAudioBuffer => -1,
             CMSampleBufferError::UnknownError(value) => value,
         }

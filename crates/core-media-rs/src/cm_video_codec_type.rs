@@ -24,6 +24,8 @@ impl CMVideoCodecType {
     pub const JPEG: Self = Self::from_static_str("jpeg");
     /// A type that identifies the JPEG format with Open-DML extensions.
     pub const JPEG_OPEN_DML: Self = Self::from_static_str("dmb1");
+    /// A type that identifies the JPEG XL format.
+    pub const JPEG_XL: Self = Self::from_static_str("jxlc");
 
     /// A type that identifies the ITU-T H.263 format.
     pub const H263: Self = Self::from_static_str("h263");
@@ -79,14 +81,17 @@ impl CMVideoCodecType {
     pub const APPLE_PRO_RES_422_LT: Self = Self::from_static_str("apcs");
     /// A type that identifies the Apple ProRes 422 Proxy format.
     pub const APPLE_PRO_RES_422_PROXY: Self = Self::from_static_str("apco");
+
     /// A type that identifies the Apple ProRes RAW format.
     pub const APPLE_PRO_RES_RAW: Self = Self::from_static_str("aprn");
     /// A type that identifies the Apple ProRes RAW HQ format.
     pub const APPLE_PRO_RES_RAW_HQ: Self = Self::from_static_str("aprh");
 
     /// A type that identifies the Disparity HVEC format.
+    /// encodes kCVPixelFormatType_DisparityFloat16 in 10-bit monochrome HEVC
     pub const DISPARITY_HEVC: Self = Self::from_static_str("dish");
     /// A type that identifies the Depth HVEC format.
+    /// encodes kCVPixelFormatType_DepthFloat16 in 10-bit monochrome HEVC
     pub const DEPTH_HEVC: Self = Self::from_static_str("deph");
 
     /// A type that identifies the AV1 format.

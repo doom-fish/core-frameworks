@@ -8,17 +8,17 @@ members = [
 ]
 [workspace.package]
 authors = ["Per Johansson <per@doom.fisn>"]
-version = "0.3.1"
+version = "0.3.2"
 edition = "2021"
 repository = "https://github.com/doom-fish/core-frameworks"
 homepage = "https://doom.fish"
 license = "MIT OR Apache-2.0"
 
 [workspace.dependencies]
-core-audio-types-rs = { path = "crates/core-audio-types-rs", version = "0.3.1" }
-core-media-rs = { path = "crates/core-media-rs", version = "0.3.1" }
-core-video-rs = { path = "crates/core-video-rs", version = "0.3.1" }
-core-utils-rs = { path = "crates/core-utils-rs", version = "0.3.1" }
+core-audio-types-rs = { path = "crates/core-audio-types-rs", version = "0.3.2" }
+core-media-rs = { path = "crates/core-media-rs", version = "0.3.2" }
+core-video-rs = { path = "crates/core-video-rs", version = "0.3.2" }
+core-utils-rs = { path = "crates/core-utils-rs", version = "0.3.2" }
 
 # External dependencies
 core-foundation = "0.10"

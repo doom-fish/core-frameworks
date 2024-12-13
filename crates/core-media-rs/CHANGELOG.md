@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.3](https://github.com/doom-fish/core-frameworks/compare/core-media-rs-v0.3.2...core-media-rs-v0.3.3) - 2024-12-13
+
+### Fixed
+
+- *(CMVideoCodecType)* enable CMVideoCodecType again
+
 ## [0.3.1](https://github.com/doom-fish/core-frameworks/compare/core-media-rs-v0.3.0...core-media-rs-v0.3.1) - 2024-12-13
 
 ### Added

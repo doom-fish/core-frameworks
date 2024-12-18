@@ -57,51 +57,75 @@ pub trait MutLockGuardTrait {
     fn unlock_mut(&mut self);
 }
 #[derive(Debug)]
-pub struct BaseAddressGuard<'a>(CVPixelBuffer, &'a [u8]);
+pub struct BaseAddressGuard<'a>(CVPixelBuffer, Vec<&'a [u8]>);
 
 impl BaseAddressGuard<'_> {
     pub fn as_slice(&self) -> &[u8] {
-        self.1
+        self.1[0]
+    }
+    pub fn as_slice_plane(&self, plane: usize) -> &[u8] {
+        assert!(plane < self.1.len());
+        self.1[plane]
     }
     pub fn as_cursor(&self) -> io::Cursor<&[u8]> {
-        io::Cursor::new(self.1)
+        io::Cursor::new(self.1[0])
+    }
+    pub fn as_cursor_plane(&self, plane: usize) -> io::Cursor<&[u8]> {
+        assert!(plane < self.1.len());
+        io::Cursor::new(self.1[plane])
     }
 }
 impl Deref for BaseAddressGuard<'_> {
     type Target = [u8];
     fn deref(&self) -> &Self::Target {
-        self.1
+        self.1[0]
     }
 }
 
 #[derive(Debug)]
-pub struct MutBaseAddressGuard<'a>(CVPixelBuffer, &'a mut [u8]);
+pub struct MutBaseAddressGuard<'a>(CVPixelBuffer, Vec<&'a mut [u8]>);
 
 impl MutBaseAddressGuard<'_> {
     pub fn as_slice(&self) -> &[u8] {
-        self.1
+        self.1[0]
+    }
+    pub fn as_slice_plane(&self, plane: usize) -> &[u8] {
+        assert!(plane < self.1.len());
+        self.1[plane]
     }
     pub fn as_mut_slice(&mut self) -> &mut [u8] {
-        self.1
+        self.1[0]
+    }
+    pub fn as_mut_slice_plane(&mut self, plane: usize) -> &mut [u8] {
+        assert!(plane < self.1.len());
+        self.1[plane]
     }
     pub fn as_cursor(&self) -> io::Cursor<&[u8]> {
-        io::Cursor::new(self.1)
+        io::Cursor::new(self.1[0])
+    }
+    pub fn as_cursor_plane(&self, plane: usize) -> io::Cursor<&[u8]> {
+        assert!(plane < self.1.len());
+        io::Cursor::new(self.1[plane])
     }
     pub fn as_mut_cursor(&mut self) -> io::Cursor<&mut [u8]> {
-        io::Cursor::new(self.1)
+        io::Cursor::new(self.1[0])
+    }
+    pub fn as_mut_cursor_plane(&mut self, plane: usize) -> io::Cursor<&mut [u8]> {
+        assert!(plane < self.1.len());
+        io::Cursor::new(self.1[plane])
     }
 }
 
 impl Deref for MutBaseAddressGuard<'_> {
     type Target = [u8];
     fn deref(&self) -> &Self::Target {
-        self.1
+        self.1[0]
     }
 }
 
 impl DerefMut for MutBaseAddressGuard<'_> {
     fn deref_mut(&mut self) -> &mut Self::Target {
-        self.1
+        self.1[0]
     }
 }
 
@@ -123,18 +147,36 @@ impl MutLockGuardTrait for MutBaseAddressGuard<'_> {
 impl<'a> LockTrait<BaseAddressGuard<'a>, CVPixelBufferError> for CVPixelBuffer {
     fn lock(&self) -> Result<LockGuard<BaseAddressGuard<'a>>, CVPixelBufferError> {
         self.internal_lock_base_address(CVPixelBufferLockFlags::ReadOnly)?;
-        Ok(LockGuard(BaseAddressGuard(
-            self.clone(),
-            self.internal_base_address()?,
-        )))
+        let plane_count = self.internal_get_plane_count();
+        if plane_count == 0 {
+            Ok(LockGuard(BaseAddressGuard(
+                self.clone(),
+                vec![self.internal_base_address()?],
+            )))
+        } else {
+            let mut planes = Vec::with_capacity(plane_count as usize);
+            for i in 0..plane_count {
+                planes.push(self.internal_base_address_of_plane(i)?);
+            }
+            Ok(LockGuard(BaseAddressGuard(self.clone(), planes)))
+        }
     }
 }
 impl<'a> MutLockTrait<MutBaseAddressGuard<'a>, CVPixelBufferError> for CVPixelBuffer {
     fn lock_mut(&mut self) -> Result<MutLockGuard<MutBaseAddressGuard<'a>>, CVPixelBufferError> {
         self.internal_lock_base_address(CVPixelBufferLockFlags::ReadWrite)?;
-        Ok(MutLockGuard(MutBaseAddressGuard(
-            self.clone(),
-            self.internal_base_address_mut()?,
-        )))
+        let plane_count = self.internal_get_plane_count();
+        if plane_count == 0 {
+            Ok(MutLockGuard(MutBaseAddressGuard(
+                self.clone(),
+                vec![self.internal_base_address_mut()?],
+            )))
+        } else {
+            let mut planes = Vec::with_capacity(plane_count as usize);
+            for i in 0..plane_count {
+                planes.push(self.internal_base_address_of_plane_mut(i)?);
+            }
+            Ok(MutLockGuard(MutBaseAddressGuard(self.clone(), planes)))
+        }
     }
 }

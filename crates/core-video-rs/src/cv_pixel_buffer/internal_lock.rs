@@ -65,6 +65,27 @@ impl CVPixelBuffer {
             Ok(unsafe { std::slice::from_raw_parts(result, size) })
         }
     }
+    pub(crate) fn internal_base_address_of_plane<'a>(
+        &self,
+        plane_index: u32,
+    ) -> Result<&'a [u8], CVPixelBufferError> {
+        extern "C" {
+            fn CVPixelBufferGetBaseAddressOfPlane(
+                pixelBuffer: CVPixelBufferRef,
+                plane_index: u32,
+            ) -> *mut u8;
+        }
+
+        let result =
+            unsafe { CVPixelBufferGetBaseAddressOfPlane(self.as_concrete_TypeRef(), plane_index) };
+        if result.is_null() {
+            Err(CVPixelBufferError::BaseAddress)
+        } else {
+            let size = (self.internal_bytes_per_row_of_plane(plane_index) * self.internal_height())
+                as usize;
+            Ok(unsafe { std::slice::from_raw_parts(result, size) })
+        }
+    }
     pub(crate) fn internal_base_address_mut<'a>(&self) -> Result<&'a mut [u8], CVPixelBufferError> {
         extern "C" {
             fn CVPixelBufferGetBaseAddress(pixelBuffer: CVPixelBufferRef) -> *mut u8;
@@ -75,6 +96,27 @@ impl CVPixelBuffer {
             Err(CVPixelBufferError::BaseAddress)
         } else {
             let size = (self.internal_bytes_per_row() * self.internal_height()) as usize;
+            Ok(unsafe { std::slice::from_raw_parts_mut(result, size) })
+        }
+    }
+    pub(crate) fn internal_base_address_of_plane_mut<'a>(
+        &self,
+        plane_index: u32,
+    ) -> Result<&'a mut [u8], CVPixelBufferError> {
+        extern "C" {
+            fn CVPixelBufferGetBaseAddressOfPlane(
+                pixelBuffer: CVPixelBufferRef,
+                plane_index: u32,
+            ) -> *mut u8;
+        }
+
+        let result =
+            unsafe { CVPixelBufferGetBaseAddressOfPlane(self.as_concrete_TypeRef(), plane_index) };
+        if result.is_null() {
+            Err(CVPixelBufferError::BaseAddress)
+        } else {
+            let size = (self.internal_bytes_per_row_of_plane(plane_index) * self.internal_height())
+                as usize;
             Ok(unsafe { std::slice::from_raw_parts_mut(result, size) })
         }
     }

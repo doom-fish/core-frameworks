@@ -1,8 +1,8 @@
 #[repr(C)]
 #[derive(Default, Copy, Clone, Debug)]
 pub struct CMTime {
-    value: i64,
-    timescale: i32,
-    flags: u32,
-    epoch: i64,
+    pub value: i64,
+    pub timescale: i32,
+    pub flags: u32,
+    pub epoch: i64,
 }

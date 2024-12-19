@@ -23,11 +23,17 @@ impl CVPixelBuffer {
     pub fn get_bytes_per_row(&self) -> u32 {
         self.internal_bytes_per_row()
     }
+    pub fn get_bytes_per_row_of_plane(&self, plane_index: u32) -> u32 {
+        self.internal_bytes_per_row_of_plane(plane_index)
+    }
     pub fn get_width(&self) -> u32 {
         self.internal_width()
     }
     pub fn get_height(&self) -> u32 {
         self.internal_height()
+    }
+    pub fn get_plane_count(&self) -> u32 {
+        self.internal_get_plane_count()
     }
 
     pub fn create(

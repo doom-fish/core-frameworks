@@ -22,6 +22,6 @@ core-utils-rs = { path = "crates/core-utils-rs", version = "0.3.5" }
 
 # External dependencies
 core-foundation = "0.10"
-core-graphics = "0.24"
+core-graphics = "0.25"
 io-surface = "0.16"
 thiserror = "2.0"
